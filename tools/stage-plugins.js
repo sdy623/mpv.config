@@ -10,12 +10,14 @@ async function stagePlugins(destination) {
     if (!fs.existsSync(path.join(source, 'main.lua'))) {
       throw new Error(`Missing ${name}; run git submodule update --init --recursive`);
     }
-    const git = (...args) => execFileSync('git', ['-C', source, ...args], {encoding: 'utf8'});
+    // The parent checkout may be created by a sandbox account on Windows;
+    // explicitly scope Git's safe-directory exception to this known submodule.
+    const git = (...args) => execFileSync('git', ['-c', `safe.directory=${source}`, '-C', source, ...args], {encoding: 'utf8'});
     if (git('status', '--porcelain', '--untracked-files=no').trim()) {
       throw new Error(`${name} has uncommitted changes; commit and pin the submodule first`);
     }
     const commit = git('rev-parse', 'HEAD').trim();
-    const entry = execFileSync('git', ['-C', root, 'ls-files', '--stage', '--', `plugins/${name}`], {encoding: 'utf8'});
+    const entry = execFileSync('git', ['-c', `safe.directory=${root}`, '-C', root, 'ls-files', '--stage', '--', `plugins/${name}`], {encoding: 'utf8'});
     const pinned = /^160000 ([a-f0-9]{40,64}) 0\t/.exec(entry);
     if (!pinned || pinned[1] !== commit) {
       throw new Error(`${name} does not match the staged gitlink; pin its commit before building`);
@@ -31,7 +33,7 @@ async function stagePlugins(destination) {
         throw new Error(`Unsafe plugin file: ${name}/${file}`);
       }
       await fs.ensureDir(path.dirname(target));
-      const content = execFileSync('git', ['-C', source, 'show', `${commit}:${file}`]);
+      const content = execFileSync('git', ['-c', `safe.directory=${source}`, '-C', source, 'show', `${commit}:${file}`]);
       await fs.writeFile(target, content);
     }
     for (const file of files.filter(f => f.startsWith('script-opts/') && f.endsWith('.conf'))) {
