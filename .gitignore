@@ -10,7 +10,6 @@ temp_*
 node_modules
 .pnp
 .pnp.js
-package-lock.json
 pnpm-lock.yaml
 
 # testing
@@ -47,3 +46,8 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Local install and source-release products
+verification/
+*.patch
+*.bundle

@@ -1,3 +1,5 @@
+> **Anime / Blu-ray plugin fork:** [安装、子模块和上游补丁 / Setup, submodules and upstream patch](FORK.md).
+
 # mpv 和 mpv.net 播放器开箱即用配置文件&精美 UI 主题皮肤&常用插件（支持 Windows、macOS、Linux）
 
 > - mpv 配置文件支持 Windows、macOS、Linux，全平台带有一致的右键菜单功能

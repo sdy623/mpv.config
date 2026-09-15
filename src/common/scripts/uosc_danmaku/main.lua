@@ -316,6 +316,10 @@ end
 function write_history(episodeid, api_server)
     local history = {}
     local path = mp.get_property("path")
+    -- Optional consumer: mpv-anime-xray. Never carry an identity to another file.
+    if DANMAKU.anime and DANMAKU.anime ~= "" then
+        mp.set_property_native("user-data/danmaku-anime", {path=path,title=DANMAKU.anime,episode_title=DANMAKU.episode,source=DANMAKU.source})
+    end
     local dir = get_parent_directory(path)
     local fname = mp.get_property('filename/no-ext')
     local episodeNumber = 0

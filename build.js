@@ -5,7 +5,7 @@ const { ZipArchive } = require("archiver");
 
 // ---------- 配置 ----------
 const BASE_SRC = "src"; // 所有源文件位于此目录
-const SKINS = ["modernz", "uosc"];
+const SKINS = ["uosc"]; // Independent plugin menus require uosc.
 const MENU_CONFIGS = [
   { suffix: "default", file: "menu-default.conf" },
   { suffix: "macos-white", file: "menu-macos-white.conf" },
@@ -14,6 +14,7 @@ const MENU_CONFIGS = [
 const COMMON_DIR = path.join(BASE_SRC, "common");
 const OUTPUT_DIR = "dist";
 const ROOT_FILES = ["mpv.conf", "input.conf"]; // 这些文件也在 src 根目录下
+const { stagePlugins } = require("./tools/stage-plugins");
 
 // ---------- 获取版本号 ----------
 function getVersion() {
@@ -51,6 +52,7 @@ function createZip(sourceDir, zipPath) {
 
 // ---------- 主流程 ----------
 async function build() {
+  process.chdir(__dirname);
   const version = getVersion();
   console.log(`📦 版本号: ${version}`);
 
@@ -116,6 +118,12 @@ async function build() {
           } else {
             console.warn(`⚠️  源目录缺少 ${srcFile}，将跳过`);
           }
+        }
+
+        // Source-only submodule snapshots; no .venv, databases, cache or .git.
+        await stagePlugins(tempDir);
+        for (const file of ["LICENSE.LGPL", "LICENSE.integration", "FORK.md", "Setup-Plugins.ps1"]) {
+          await fs.copy(file, path.join(tempDir, file));
         }
 
         // 6. 写入 config-version

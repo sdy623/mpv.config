@@ -1,5 +1,5 @@
 -- github-release-checker.lua
--- 自动检查 akFace/mpv.config 的 GitHub 最新 Release
+-- 自动检查 sdy623/mpv.config 的 GitHub 最新 Release
 --
 -- 安装：将本文件放到 mpv/scripts/ 目录
 -- 默认快捷键：Ctrl+Alt+U
@@ -7,7 +7,7 @@
 local mp = require 'mp'
 local utils = require 'mp.utils'
 
-local REPO = "akFace/mpv.config"
+local REPO = "sdy623/mpv.config"
 local API_URL = "https://api.github.com/repos/" .. REPO .. "/releases/latest"
 
 local open_cmd_args = nil
@@ -148,8 +148,8 @@ local function open_url(url)
 end
 
 local function check_update()
-    mp.msg.info("正在检查 akFace/mpv.config 更新……")
-    osd("正在检查 akFace/mpv.config 更新……", 2)
+    mp.msg.info("正在检查 sdy623/mpv.config 更新……")
+    osd("正在检查 sdy623/mpv.config 更新……", 2)
 
     local latest = get_latest_release()
     if not latest then
@@ -178,7 +178,7 @@ local function check_update()
         if not pending_open then
             pending_open = true
             mp.add_timeout(4, function()
-                open_url("https://github.com/akFace/mpv.config/releases")
+                open_url("https://github.com/sdy623/mpv.config/releases")
                 pending_open = false
             end)
         end

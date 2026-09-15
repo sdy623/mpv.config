@@ -1,3 +1,5 @@
+> **Anime / Blu-ray plugin fork:** [安装、子模块和上游补丁 / Setup, submodules and upstream patch](FORK.md).
+
 # Ready-to-Use Configuration Files, Elegant UI Themes & Useful Plugins for mpv and mpv.net (Windows, macOS, Linux)
 
 > The configuration file of the mpv player supports Windows, macOS, Linux, with a consistent context menu feature across all platforms.

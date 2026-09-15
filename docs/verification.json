@@ -1,0 +1,80 @@
+{
+  "date": "2026-09-15",
+  "version": "0.1.0",
+  "anime_python_and_mcp_tests": 7,
+  "bluray_status_tests": 3,
+  "mpv_plugin_checks": [
+    {
+      "case": "Directory plugin identifies the initial command-line file",
+      "result": "PASS"
+    },
+    {
+      "case": "Candidate menu selects and stores a local override",
+      "result": "PASS"
+    },
+    {
+      "case": "Rapid media change clears stale identity; current danmaku title is accepted",
+      "result": "PASS"
+    },
+    {
+      "case": "Offline metadata panel includes a verified AniDB link",
+      "result": "PASS"
+    },
+    {
+      "case": "Directory plugin identifies the initial command-line file",
+      "result": "PASS"
+    },
+    {
+      "case": "Candidate menu selects and stores a local override",
+      "result": "PASS"
+    },
+    {
+      "case": "Rapid media change clears stale identity; current danmaku title is accepted",
+      "result": "PASS"
+    },
+    {
+      "case": "Offline metadata panel includes a verified AniDB link",
+      "result": "PASS"
+    },
+    {
+      "case": "Blu-ray settings save independently without anime plugin",
+      "result": "PASS"
+    }
+  ],
+  "bluray_runtime_checks": [
+    {
+      "case": "libaacs priority: exactly one attempt per backend, no retry loop",
+      "result": "PASS"
+    },
+    {
+      "case": "mmbd priority: exactly one attempt per backend, no retry loop",
+      "result": "PASS"
+    },
+    {
+      "case": "Simulated active Xreveal: disabled menu, plaintext view, no backend or KEYDB attempt",
+      "result": "PASS"
+    },
+    {
+      "case": "Active-Xreveal branch rejects unmounted ISO before decryption",
+      "result": "PASS"
+    },
+    {
+      "case": "Unknown process state fails closed without claiming Xreveal is active",
+      "result": "PASS"
+    },
+    {
+      "case": "Ordinary playback clears disc backend state",
+      "result": "PASS"
+    }
+  ],
+  "environment": {
+    "os": "Windows x64",
+    "python": "3.13",
+    "mpv": "LuaJIT + libbluray; null video and audio outputs"
+  },
+  "limits": [
+    "Xreveal activation was simulated without starting the application.",
+    "No readable physical disc was present for a fresh full-disc playback check.",
+    "No visual UI, audible sound, hotplug or BD-J compatibility claim is made by these tests."
+  ]
+}

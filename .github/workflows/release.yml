@@ -1,108 +1,28 @@
-name: Auto Build and Release
-
+name: Build plugin configuration
 on:
   push:
-    branches:
-      - master
-    paths:
-      - "src/**"
-      - "build.js"
+    branches: [anime-bd-plugins]
+  pull_request:
   workflow_dispatch:
-
+permissions:
+  contents: read
 jobs:
-  build-and-release:
+  build:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
+          submodules: recursive
           fetch-depth: 0
-
-      # ---------- 版本生成和 Release Notes ----------
-      - name: Generate Version and Release Notes
-        id: release_info
-        shell: bash
-        run: |
-          set -e
-
-          # 获取最新 Tag
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || true)
-
-          if [ -z "$LAST_TAG" ]; then
-            LAST_TAG="v1.0.0"
-          fi
-
-          echo "Last Tag: $LAST_TAG"
-
-          # 自动递增版本号
-          VERSION_NUM=${LAST_TAG#v}
-          MAJOR_MINOR=${VERSION_NUM%.*}
-          PATCH=${VERSION_NUM##*.}
-
-          NEW_PATCH=$((PATCH + 1))
-          NEW_TAG="v${MAJOR_MINOR}.${NEW_PATCH}"
-
-          echo "New Tag: $NEW_TAG"
-
-          echo "NEW_TAG=$NEW_TAG" >> "$GITHUB_OUTPUT"
-
-          # 获取 Commit 日志
-          if git rev-parse "$LAST_TAG" >/dev/null 2>&1; then
-            COMMITS=$(git log "$LAST_TAG"..HEAD --pretty=format:"- %s")
-          else
-            COMMITS=$(git log --pretty=format:"- %s")
-          fi
-
-          if [ -z "$COMMITS" ]; then
-            COMMITS="- 自动更新配置与脚本"
-          fi
-
-          # 生成 Release 描述
-          cat > release_body.txt <<EOF
-          ### 两套主题皮肤：\`modernz\` 和 \`uosc\` 多种菜单风格
-
-          - 请选择喜欢的某一套下载即可
-          - 已包含所有配置文件，解压放到配置文件夹下即可
-          - \`modernz_xxx.zip\`和\`uosc_xxx.zip\` 后缀为不同风格的右键菜单，功能一样。 👉 [右键菜单预览](https://github.com/akFace/mpv.config#%E5%8A%9F%E8%83%BD%E5%BC%BA%E5%A4%A7%E7%9A%84%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95)
-          - 👉 [使用教程](https://github.com/akFace/mpv.config#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)
-          - 关于弹幕流畅度问题，目前本人的设备屏幕是 4k60hz，要打开video-sync=display-resample才流畅，但有些用户的设备打开此设置开倍速播放会导致声音卡问题，因此现在默认关闭，需要设置的请打开 mpv.conf 文件编辑，删除此行代码最前面的 # 号
-
-          ---
-
-          ## Update log:
-
-          EOF
-
-          echo "$COMMITS" >> release_body.txt
-
-      # ---------- 设置 Node.js 环境 ----------
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "22"
-
-      # ---------- 安装依赖 ----------
-      - name: Install Dependencies
-        run: npm install
-
-      # ---------- 替换原有的 Create ZIP Archives 步骤 ----------
-      - name: Build ZIP Archives with Node.js
-        run: node build.js
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
         env:
-          RELEASE_VERSION: ${{ steps.release_info.outputs.NEW_TAG }}
-
-      # ---------- 创建 GitHub Release（文件路径改为 dist/*.zip） ----------
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+          RELEASE_VERSION: v1.9.19-anime-bd.1
+      - uses: actions/upload-artifact@v4
         with:
-          tag_name: ${{ steps.release_info.outputs.NEW_TAG }}
-          name: ${{ steps.release_info.outputs.NEW_TAG }}
-          body_path: release_body.txt
-          prerelease: false
-          files: dist/*.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: plugin-configurations
+          path: dist/*.zip

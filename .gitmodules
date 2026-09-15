@@ -1,0 +1,6 @@
+[submodule "plugins/mpv-anime-xray"]
+	url = https://github.com/sdy623/mpv-anime-xray.git
+	path = plugins/mpv-anime-xray
+[submodule "plugins/mpv-bluray"]
+	url = https://github.com/sdy623/mpv-bluray.git
+	path = plugins/mpv-bluray
